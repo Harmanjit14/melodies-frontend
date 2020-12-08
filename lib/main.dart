@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:melodies/pages/loadingscreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,9 +12,9 @@ class MyApp extends StatelessWidget {
       title: 'Melodies',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: "/",
       routes: {
-        "/": 
+        "/": (context) => LoadingScreen(),
       },
     );
   }
