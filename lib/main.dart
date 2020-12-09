@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:melodies/pages/auth.dart';
 import 'package:melodies/pages/loadingscreen.dart';
 import 'package:melodies/pages/navigation.dart';
 
@@ -13,10 +14,11 @@ class MyApp extends StatelessWidget {
       title: 'Melodies',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(),
-      initialRoute: "/nav",
+      initialRoute: "/auth",
       routes: {
         "/": (context) => LoadingScreen(),
-        "/nav":(context)=>Navigation(),
+        "/auth": (context) => Authentication(),
+        "/nav": (context) => Navigation(),
       },
     );
   }
