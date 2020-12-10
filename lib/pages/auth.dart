@@ -1,8 +1,10 @@
-import 'dart:developer';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:melodies/models/token.dart';
 
 class Authentication extends StatefulWidget {
   @override
@@ -10,7 +12,87 @@ class Authentication extends StatefulWidget {
 }
 
 class _AuthenticationState extends State<Authentication> {
+  int stateBut = 0;
+  Widget logChild() {
+    switch (stateBut) {
+      case 0:
+        {
+          return Text(
+            "Continue",
+            style: GoogleFonts.poppins(
+                textStyle: TextStyle(fontSize: 20, color: Colors.white)),
+          );
+        }
+        break;
+      case 1:
+        {
+          return SpinKitDoubleBounce(
+            color: Colors.white,
+            size: 30.0,
+          );
+        }
+        break;
+      case 2:
+        {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                FontAwesomeIcons.checkCircle,
+                color: Colors.white,
+              ),
+              SizedBox(
+                width: 7,
+              ),
+              Text(
+                "Success",
+                style: GoogleFonts.poppins(
+                    textStyle: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold)),
+              ),
+            ],
+          );
+        }
+        break;
+      case 3:
+        {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                FontAwesomeIcons.timesCircle,
+                color: Colors.white,
+              ),
+              SizedBox(
+                width: 7,
+              ),
+              Text(
+                "Check Credentials!",
+                style: GoogleFonts.poppins(
+                    textStyle: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold)),
+              ),
+            ],
+          );
+        }
+        break;
+      default:
+        {
+          return Text(
+            "Continue",
+            style: GoogleFonts.poppins(
+                textStyle: TextStyle(fontSize: 20, color: Colors.white)),
+          );
+        }
+    }
+  }
+
   Widget login() {
+    String email, password;
     return Container(
         child: SingleChildScrollView(
       child: Container(
@@ -48,6 +130,9 @@ class _AuthenticationState extends State<Authentication> {
             Container(
               margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
               child: TextFormField(
+                onChanged: (val) {
+                  email = val;
+                },
                 keyboardType: TextInputType.emailAddress,
                 style: TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -56,7 +141,7 @@ class _AuthenticationState extends State<Authentication> {
                     filled: true,
                     hintText: "Email",
                     prefixIcon: Icon(
-                      FontAwesomeIcons.user,
+                      FontAwesomeIcons.userAlt,
                     ),
                     hintStyle: TextStyle(fontSize: 18),
                     border: OutlineInputBorder(
@@ -67,6 +152,9 @@ class _AuthenticationState extends State<Authentication> {
             Container(
               margin: EdgeInsets.fromLTRB(20, 15, 20, 0),
               child: TextFormField(
+                onChanged: (val) {
+                  password = val;
+                },
                 keyboardType: TextInputType.text,
                 obscureText: true,
                 style: TextStyle(fontSize: 18),
@@ -90,15 +178,55 @@ class _AuthenticationState extends State<Authentication> {
                 borderRadius: BorderRadius.circular(20),
                 child: RaisedButton(
                   padding: EdgeInsets.all(15),
-                  onPressed: () {},
-                  child: Text(
-                    "Continue",
-                    style: GoogleFonts.poppins(
-                        textStyle:
-                            TextStyle(fontSize: 20, color: Colors.white)),
-                  ),
+                  onPressed: () async {
+                    stateBut = 1;
+                    setState(() {});
+                    int temp = await getToken(email, password);
+                    if (temp == 1) {
+                      Timer(Duration(seconds: 2), () {
+                        stateBut = 2;
+                        setState(() {});
+                      });
+                      Timer(Duration(seconds: 3), () {
+                        Navigator.pushReplacementNamed(context, "/nav");
+                      });
+                    } else {
+                      Timer(Duration(seconds: 2), () {
+                        stateBut = 3;
+                        setState(() {});
+                      });
+                      Timer(Duration(seconds: 4), () {
+                        stateBut = 0;
+                        setState(() {});
+                      });
+                    }
+                  },
+                  child: logChild(),
                   color: Colors.blue[800],
                 ),
+              ),
+            ),
+            SizedBox(height: 60),
+            Container(
+              width: double.maxFinite,
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      child: Text(
+                    "Don't have an account ?",
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  )),
+                  SizedBox(width: 20),
+                  Container(
+                    child: IconButton(
+                        color: Colors.white,
+                        iconSize: 30,
+                        icon: Icon(FontAwesomeIcons.arrowRight),
+                        onPressed: () {}),
+                  ),
+                ],
               ),
             ),
           ],
