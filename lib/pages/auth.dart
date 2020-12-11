@@ -92,7 +92,6 @@ class _AuthenticationState extends State<Authentication> {
   }
 
   Widget login() {
-    String email, password;
     return Container(
         child: SingleChildScrollView(
       child: Container(
@@ -181,13 +180,14 @@ class _AuthenticationState extends State<Authentication> {
                   onPressed: () async {
                     stateBut = 1;
                     setState(() {});
-                    int temp = await getToken(email, password);
+                    int temp = await getToken();
                     if (temp == 1) {
                       Timer(Duration(seconds: 2), () {
                         stateBut = 2;
                         setState(() {});
                       });
                       Timer(Duration(seconds: 3), () {
+                        password="";
                         Navigator.pushReplacementNamed(context, "/nav");
                       });
                     } else {

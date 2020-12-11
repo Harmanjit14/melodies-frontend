@@ -1,19 +1,21 @@
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:graphql/client.dart';
 
-String token="";
+String token = "";
+String email = "", password = "";
 
-Future<int> getToken(String email, String password) async {
-  HttpLink _httpLink = HttpLink(
+Future<int> getToken() async {
+  final HttpLink _httpLink = HttpLink(
     uri: "https://melodies-backend.herokuapp.com/api/",
   );
-
+  final AuthLink authLink = AuthLink(
+    getToken: () async => 'JWT $token',
+    // OR
+    // getToken: () => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
+  );
+  final Link link = authLink.concat(_httpLink);
   GraphQLClient _client = GraphQLClient(
-    defaultPolicies: DefaultPolicies(
-        mutate:
-            Policies(error: ErrorPolicy.all, fetch: FetchPolicy.networkOnly),
-        query: Policies(fetch: FetchPolicy.noCache)),
-    cache: NormalizedInMemoryCache(dataIdFromObject: typenameDataIdFromObject),
-    link: _httpLink,
+    cache: InMemoryCache(),
+    link: link,
   );
 
   String getAuthToken = """
@@ -26,6 +28,8 @@ Future<int> getToken(String email, String password) async {
   MutationOptions tokenGet = MutationOptions(
     documentNode: gql(getAuthToken),
   );
+  print(email);
+  print(password);
   print("\n\nstarted\n\n");
 
   QueryResult result = await _client.mutate(tokenGet);
@@ -35,6 +39,7 @@ Future<int> getToken(String email, String password) async {
   } else {
     print("done");
     token = result.data["tokenAuth"]["token"];
+    print("Done!");
 
     return 1;
   }

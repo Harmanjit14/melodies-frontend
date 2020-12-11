@@ -33,6 +33,7 @@ dependencies:
   google_fonts: ^1.1.1
   graphql_flutter: ^3.0.0
   flutter_spinkit: "^4.1.2"
+  graphql: ^3.0.0
 
 
 dev_dependencies:
