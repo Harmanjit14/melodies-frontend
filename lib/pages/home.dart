@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:melodies/models/token.dart';
@@ -34,9 +35,8 @@ class _HomeState extends State<Home> {
     final Link link = authLink.concat(_link);
     final ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
       GraphQLClient(
-        defaultPolicies: DefaultPolicies(query: Policies(
-          fetch: FetchPolicy.cacheAndNetwork
-        )),
+          defaultPolicies: DefaultPolicies(
+              query: Policies(fetch: FetchPolicy.cacheAndNetwork)),
           link: link,
           cache: OptimisticCache(dataIdFromObject: typenameDataIdFromObject)),
     );
@@ -44,7 +44,6 @@ class _HomeState extends State<Home> {
       client: client,
       child: SafeArea(
         child: Container(
-          
           child: SingleChildScrollView(
             child: Container(
               margin: EdgeInsets.fromLTRB(20, 5, 20, 10),
@@ -88,8 +87,8 @@ class _HomeState extends State<Home> {
                               ),
                             )),
                         Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
                           height: 250,
                           width: MediaQuery.of(context).size.width,
                           child: Column(
@@ -156,25 +155,44 @@ class _HomeState extends State<Home> {
                     width: MediaQuery.of(context).size.width,
                   ),
                   Container(
-                    height: 300,
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    child: Text(
+                      "Languages",
+                      style: GoogleFonts.poppins(
+                          textStyle: TextStyle(fontSize: 20),
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    height: 150,
                     child: Query(
                       options: QueryOptions(documentNode: gql(getGenre)),
                       builder: (result, {fetchMore, refetch}) {
                         if (result.hasException) {
                           print(result.exception);
-                          return Container();
+                          return Container(
+                            child: Text("Error Fetching Data!"),
+                          );
                         } else if (result.loading) {
-                          print("loading");
-                          return Container();
+                          return Container(
+                            child: SpinKitCircle(
+                              color: Colors.blue,
+                            ),
+                          );
                         } else {
                           List genre = result.data["genre"];
                           return ListView.builder(
-                            shrinkWrap: true,
-                             itemCount: genre.length,
-                            itemBuilder: (context, index) {
-                            final temp = genre[index]["genere"];
-                            return Text(temp);
-                          });
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              itemCount: genre.length,
+                              itemBuilder: (context, index) {
+                                final title = genre[index]["genere"];
+                                final image = genre[index]["image"];
+                                final id = genre[index]["id"];
+                                return language(title, id, image);
+                              });
                         }
                       },
                     ),
@@ -187,4 +205,34 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+}
+
+Widget language(String title, String id, String image) {
+  return Container(
+    child: Row(
+      children: [
+        SizedBox(
+          width: 10,
+        ),
+        GestureDetector(
+          onTap: () {
+            print(title);
+          },
+          child: Column(
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.black,
+                child: Image.network(image),
+                radius: 60,
+              ),
+              Text(title),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: 20,
+        ),
+      ],
+    ),
+  );
 }
