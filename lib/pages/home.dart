@@ -12,13 +12,12 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final String getGenre = """
                         {
-                            genre{
-                                    id
-                                    genere
-                                    image
-                                    
-                                  }
-                                }
+  topgenre{
+    id
+    genere
+    image
+  }
+}
                               
                           """;
 
@@ -158,7 +157,50 @@ class _HomeState extends State<Home> {
                     alignment: Alignment.centerLeft,
                     margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: Text(
-                      "Languages",
+                      "Top Languages",
+                      style: GoogleFonts.poppins(
+                          textStyle: TextStyle(fontSize: 20),
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    height: 150,
+                    child: Query(
+                      options: QueryOptions(documentNode: gql(getGenre)),
+                      builder: (result, {fetchMore, refetch}) {
+                        if (result.hasException) {
+                          print(result.exception);
+                          return Container(
+                            child: Text("Error Fetching Data!"),
+                          );
+                        } else if (result.loading) {
+                          return Container(
+                            child: SpinKitCircle(
+                              color: Colors.blue,
+                            ),
+                          );
+                        } else {
+                          List genre = result.data["genre"];
+                          return ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              itemCount: genre.length,
+                              itemBuilder: (context, index) {
+                                final title = genre[index]["genere"];
+                                final image = genre[index]["image"];
+                                final id = genre[index]["id"];
+                                return language(title, id, image);
+                              });
+                        }
+                      },
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    child: Text(
+                      "Top Languages",
                       style: GoogleFonts.poppins(
                           textStyle: TextStyle(fontSize: 20),
                           fontWeight: FontWeight.bold),

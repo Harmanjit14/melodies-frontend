@@ -59,7 +59,6 @@ class _NavigationState extends State<Navigation> {
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            //TODO :NowPlayingMini(),
             SalomonBottomBar(
               currentIndex: _SelectedTab.values.indexOf(_selectedTab),
               onTap: _handleIndexChanged,
