@@ -20,6 +20,15 @@ class _HomeState extends State<Home> {
 }
                               
                           """;
+  final String topArtist = """
+    {
+  topartists{
+    id
+    artist
+    image
+  }
+}
+  """;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +76,13 @@ class _HomeState extends State<Home> {
                       style: GoogleFonts.poppins(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
+                          shadows: <Shadow>[
+                            Shadow(
+                              offset: Offset(0.5, 0.5),
+                              blurRadius: 1.5,
+                              color: Color.fromARGB(255, 0, 0, 0),
+                            ),
+                          ],
                           letterSpacing: -0.5),
                     ),
                   ),
@@ -155,12 +171,19 @@ class _HomeState extends State<Home> {
                   ),
                   Container(
                     alignment: Alignment.centerLeft,
-                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
                     child: Text(
                       "Top Languages",
                       style: GoogleFonts.poppins(
                           textStyle: TextStyle(fontSize: 20),
-                          fontWeight: FontWeight.bold),
+                          fontWeight: FontWeight.bold,
+                          shadows: <Shadow>[
+                            Shadow(
+                              offset: Offset(0.5, 0.5),
+                              blurRadius: 1.5,
+                              color: Color.fromARGB(255, 0, 0, 0),
+                            ),
+                          ]),
                     ),
                   ),
                   Container(
@@ -185,7 +208,7 @@ class _HomeState extends State<Home> {
                           return ListView.builder(
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
-                              itemCount: genre.length,
+                              itemCount: val(genre),
                               itemBuilder: (context, index) {
                                 final title = genre[index]["genere"];
                                 final image = genre[index]["image"];
@@ -200,17 +223,24 @@ class _HomeState extends State<Home> {
                     alignment: Alignment.centerLeft,
                     margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: Text(
-                      "Top Languages",
+                      "Top Artists",
                       style: GoogleFonts.poppins(
                           textStyle: TextStyle(fontSize: 20),
-                          fontWeight: FontWeight.bold),
+                          fontWeight: FontWeight.bold,
+                          shadows: <Shadow>[
+                            Shadow(
+                              offset: Offset(0.5, 0.5),
+                              blurRadius: 1.5,
+                              color: Color.fromARGB(255, 0, 0, 0),
+                            ),
+                          ]),
                     ),
                   ),
                   Container(
                     margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     height: 150,
                     child: Query(
-                      options: QueryOptions(documentNode: gql(getGenre)),
+                      options: QueryOptions(documentNode: gql(topArtist)),
                       builder: (result, {fetchMore, refetch}) {
                         if (result.hasException) {
                           print(result.exception);
@@ -224,16 +254,16 @@ class _HomeState extends State<Home> {
                             ),
                           );
                         } else {
-                          List genre = result.data["genre"];
+                          List genre = result.data["topartists"];
                           return ListView.builder(
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
-                              itemCount: genre.length,
+                              itemCount: val(genre),
                               itemBuilder: (context, index) {
-                                final title = genre[index]["genere"];
+                                final title = genre[index]["artist"];
                                 final image = genre[index]["image"];
                                 final id = genre[index]["id"];
-                                return language(title, id, image);
+                                return artist(title, id, image);
                               });
                         }
                       },
@@ -246,6 +276,14 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
+  }
+}
+
+int val(List temp) {
+  if (temp.length >= 5) {
+    return 5;
+  } else {
+    return temp.length;
   }
 }
 
@@ -267,6 +305,43 @@ Widget language(String title, String id, String image) {
                 child: Image.network(image),
                 radius: 60,
               ),
+              Text(title),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: 20,
+        ),
+      ],
+    ),
+  );
+}
+
+Widget artist(String title, String id, String image) {
+  return Container(
+    child: Row(
+      children: [
+        SizedBox(
+          width: 10,
+        ),
+        GestureDetector(
+          onTap: () {
+            print(title);
+          },
+          child: Column(
+            children: [
+              Container(
+                height: 100,
+                width: 100,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(
+                    image,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(height: 7),
               Text(title),
             ],
           ),
