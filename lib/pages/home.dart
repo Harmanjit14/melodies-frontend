@@ -30,6 +30,17 @@ class _HomeState extends State<Home> {
 }
   """;
 
+  final String topSongs = """
+  {
+  topsongs{
+    id
+    title
+    link
+    image
+  }
+}
+""";
+
   @override
   Widget build(BuildContext context) {
     final HttpLink _link =
@@ -204,7 +215,7 @@ class _HomeState extends State<Home> {
                             ),
                           );
                         } else {
-                          List genre = result.data["genre"];
+                          List genre = result.data["topgenre"];
                           return ListView.builder(
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
@@ -261,6 +272,56 @@ class _HomeState extends State<Home> {
                               itemCount: val(genre),
                               itemBuilder: (context, index) {
                                 final title = genre[index]["artist"];
+                                final image = genre[index]["image"];
+                                final id = genre[index]["id"];
+                                return artist(title, id, image);
+                              });
+                        }
+                      },
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    child: Text(
+                      "Top Songs",
+                      style: GoogleFonts.poppins(
+                          textStyle: TextStyle(fontSize: 20),
+                          fontWeight: FontWeight.bold,
+                          shadows: <Shadow>[
+                            Shadow(
+                              offset: Offset(0.5, 0.5),
+                              blurRadius: 1.5,
+                              color: Color.fromARGB(255, 0, 0, 0),
+                            ),
+                          ]),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    height: 150,
+                    child: Query(
+                      options: QueryOptions(documentNode: gql(topSongs)),
+                      builder: (result, {fetchMore, refetch}) {
+                        if (result.hasException) {
+                          print(result.exception);
+                          return Container(
+                            child: Text("Error Fetching Data!"),
+                          );
+                        } else if (result.loading) {
+                          return Container(
+                            child: SpinKitCircle(
+                              color: Colors.blue,
+                            ),
+                          );
+                        } else {
+                          List genre = result.data["topsongs"];
+                          return ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              itemCount: val(genre),
+                              itemBuilder: (context, index) {
+                                final title = genre[index]["title"];
                                 final image = genre[index]["image"];
                                 final id = genre[index]["id"];
                                 return artist(title, id, image);
