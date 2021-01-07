@@ -1,14 +1,14 @@
 name: Flutter CI
 
 # This workflow is triggered on pushes to the repository.
-
-on:
-  
-  push:
+on: 
+  push
     branches:
-    - master    
+    - master
+name: Build and Release apk
 jobs:
   build:
+    name: Build APK
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -17,16 +17,12 @@ jobs:
         java-version: '12.x'
     - uses: subosito/flutter-action@v1
       with:
-        channel: 'stable' # 'dev', 'alpha', default to: 'stable'
-        # flutter-version: '1.12.x' # you can also specify exact version of flutter
+        channel: "stable"
     - run: flutter pub get
-    - run: flutter analyze .
     - run: flutter pub upgrade
-    # Build apk.
-    - run: flutter build apk
-    
-    # Upload generated apk to the artifacts.
-    - uses: actions/upload-artifact@v1
+    - run: flutter build apk --debug --split-per-abi
+    - name: Create a Release APK
+      uses: ncipollo/release-action@v1
       with:
-        name: release-apk
-        path: build/app/outputs/apk/release/app-release.apk
+        artifacts: "build/app/outputs/apk/debug/*.apk"
+        token: ${{ secrets.TOKEN }}
