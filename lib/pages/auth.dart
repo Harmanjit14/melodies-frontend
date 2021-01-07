@@ -187,7 +187,7 @@ class _AuthenticationState extends State<Authentication> {
                         setState(() {});
                       });
                       Timer(Duration(seconds: 3), () {
-                        password="";
+                        password = "";
                         Navigator.pushReplacementNamed(context, "/nav");
                       });
                     } else {
@@ -234,8 +234,9 @@ class _AuthenticationState extends State<Authentication> {
       ),
     ));
   }
-
-  // Widget register() {}
+  
+//TODO: CREATE A REGISTER FUNCTION!!!!
+//Here goes the function
 
   @override
   Widget build(BuildContext context) {
