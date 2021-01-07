@@ -20,7 +20,7 @@ jobs:
         channel: stable
     - run: flutter pub get
     - run: flutter build apk --debug --split-per-abi
-    - name: Create a Release APK
+    - name: Release APK
       uses: ncipollo/release-action@v1
       with:
         artifacts: "build/app/outputs/apk/debug/*.apk"
