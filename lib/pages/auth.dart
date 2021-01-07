@@ -235,7 +235,7 @@ class _AuthenticationState extends State<Authentication> {
     ));
   }
 
-  Widget register() {}
+  // Widget register() {}
 
   @override
   Widget build(BuildContext context) {
